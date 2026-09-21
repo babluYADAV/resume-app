@@ -58,9 +58,12 @@ jobs:
     needs: [lint-check, test-cases, build]
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-
+      - name: download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+          
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
