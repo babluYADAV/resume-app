@@ -77,4 +77,8 @@ jobs:
           aws-region: ${{secrets.AWS_REGION}}
 
       - name: "Upload files s3"
-        run: aws s3 sync ./dist s3://${{secrets.S3_BUCKET}} --delete
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+        run: |
+          test -n "$S3_BUCKET" || { echo "S3_BUCKET secret is not configured"; exit 1; }
+          aws s3 sync ./dist "s3://$S3_BUCKET" --delete
