@@ -1,0 +1,72 @@
+name: Deploy app on s3 bucket
+on: push
+jobs:
+  lint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          version: 24
+          cache: npm
+
+      - name: install dependency
+        run: npm install
+      - name: lint check
+        run: npm run lint
+
+  test-cases:
+    needs: [lint-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          version: 24
+          cache: npm
+
+      - name: install dependency
+        run: npm install
+      - name: check unit test cases
+        run: npm run test
+
+  build:
+    needs: [lint-check, test-cases]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          version: 24
+          cache: npm
+
+      - name: install dependency
+        run: npm install
+      - name: make a build
+        run: npm run build
+
+  deploy:
+    needs: [lint-check, test-cases, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{secrets.ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.SECRET_KEY}}
+          aws-region: ${{secrets.AWS_REGION}}
+
+      - name: "Upload files s3"
+        run: aws s3 sync .dist s3://${{secrets.S3_BUCKET}} --delete
