@@ -10,7 +10,7 @@ export default function TopLine() {
     <div className="topline">
       <div className="topline-inner">
         <span>
-          <span className="dot"></span>Resume — Shivram-Yadav
+          <span className="dot"></span>Shivram Yadav
         </span>
         <button className="theme-btn" onClick={cycle} aria-label="Toggle color theme">
           theme: {label}
