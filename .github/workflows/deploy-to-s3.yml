@@ -46,7 +46,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          version: 24
           cache: npm
 
       - name: install dependency
@@ -54,28 +54,19 @@ jobs:
       - name: make a build
         run: npm run build
 
-      - name: upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-
   deploy:
     needs: [lint-check, test-cases, build]
     runs-on: ubuntu-latest
     steps:
-      - name: download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
+      - name: checkout code
+        uses: actions/checkout@v4
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
-          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{secrets.ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.SECRET_KEY}}
+          aws-region: ${{secrets.AWS_REGION}}
 
       - name: "Upload files s3"
-        run: aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }} --delete
+        run: aws s3 sync ./dist s3://${{secrets.S3_BUCKET}} --delete
