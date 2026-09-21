@@ -1,5 +1,9 @@
 name: Deploy app on s3 bucket
-on: push
+
+on:
+  push:
+    branches: [main]
+
 jobs:
   lint-check:
     runs-on: ubuntu-latest
@@ -10,11 +14,12 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          version: 24
+          node-version: 24
           cache: npm
 
       - name: install dependency
         run: npm install
+
       - name: lint check
         run: npm run lint
 
@@ -28,11 +33,12 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          version: 24
+          node-version: 24
           cache: npm
 
       - name: install dependency
         run: npm install
+
       - name: check unit test cases
         run: npm run test
 
@@ -51,6 +57,7 @@ jobs:
 
       - name: install dependency
         run: npm install
+
       - name: make a build
         run: npm run build
 
