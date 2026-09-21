@@ -53,6 +53,11 @@ jobs:
         run: npm install
       - name: make a build
         run: npm run build
+      - name: upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
 
   deploy:
     needs: [lint-check, test-cases, build]
@@ -63,7 +68,7 @@ jobs:
         with:
           name: dist
           path: dist
-          
+
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
